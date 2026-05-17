@@ -13,6 +13,7 @@ The implementation satisfies every item in the assignment brief:
 - [x] Generates `board_size / 2` distinct emoji icons and randomly distributes
       them using a Fisher–Yates shuffle (`src/utils/board.js`).
 - [x] Configurable game timeout (seconds).
+- [x] Optional preview phase that briefly reveals all cards before the timer starts.
 - [x] On-screen countdown timer that updates every second.
 - [x] Game-over message displayed when the timer reaches zero with unmatched cards.
 - [x] Player selects two cells; both flip face-up. Matched pairs stay face-up,
@@ -48,9 +49,12 @@ npm run preview    # serves the production build locally
 
 ## How to play
 
-1. On the start screen, set the number of **rows**, **columns**, and the
-   **timeout** in seconds. The total number of cells must be even.
-2. Click **Start Game**.
+1. On the start screen, set the number of **rows**, **columns**, the
+   **timeout** in seconds, and optionally enable a **preview phase** to peek
+   at all cards for a configurable number of seconds. The total number of
+   cells must be even.
+2. Click **Start Game**. If preview is enabled, every card is revealed for
+   the preview duration before the countdown begins.
 3. Click any face-down card to flip it. Click a second card to try to match it.
    - Matching pair → both cards stay face-up.
    - Non-matching pair → both cards flip back after a brief pause.
@@ -66,6 +70,7 @@ npm run preview    # serves the production build locally
 | Rows           | 2 – 10           |
 | Columns        | 2 – 10           |
 | Timeout (sec)  | 10 – 600         |
+| Preview (sec)  | 1 – 30 (optional)|
 | Pairs (max)    | 60 (emoji pool)  |
 
 `rows × cols` must be even.
