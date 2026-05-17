@@ -5,11 +5,15 @@ const MIN_DIM = 2;
 const MAX_DIM = 10;
 const MIN_TIMEOUT = 10;
 const MAX_TIMEOUT = 600;
+const MIN_PREVIEW = 1;
+const MAX_PREVIEW = 30;
 
 export default function ConfigPanel({ onStart }) {
   const [rows, setRows] = useState(4);
   const [cols, setCols] = useState(4);
   const [timeoutSeconds, setTimeoutSeconds] = useState(60);
+  const [previewEnabled, setPreviewEnabled] = useState(true);
+  const [previewSeconds, setPreviewSeconds] = useState(5);
 
   const error = useMemo(() => {
     if (!Number.isInteger(rows) || rows < MIN_DIM || rows > MAX_DIM) {
@@ -32,13 +36,26 @@ export default function ConfigPanel({ onStart }) {
     ) {
       return `Timeout must be between ${MIN_TIMEOUT} and ${MAX_TIMEOUT} seconds.`;
     }
+    if (
+      previewEnabled &&
+      (!Number.isInteger(previewSeconds) ||
+        previewSeconds < MIN_PREVIEW ||
+        previewSeconds > MAX_PREVIEW)
+    ) {
+      return `Preview must be between ${MIN_PREVIEW} and ${MAX_PREVIEW} seconds.`;
+    }
     return null;
-  }, [rows, cols, timeoutSeconds]);
+  }, [rows, cols, timeoutSeconds, previewEnabled, previewSeconds]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (error) return;
-    onStart({ rows, cols, timeoutSeconds });
+    onStart({
+      rows,
+      cols,
+      timeoutSeconds,
+      previewSeconds: previewEnabled ? previewSeconds : 0,
+    });
   };
 
   return (
@@ -80,6 +97,28 @@ export default function ConfigPanel({ onStart }) {
           onChange={(e) => setTimeoutSeconds(Number(e.target.value))}
         />
       </label>
+
+      <label className="config-checkbox">
+        <input
+          type="checkbox"
+          checked={previewEnabled}
+          onChange={(e) => setPreviewEnabled(e.target.checked)}
+        />
+        Show cards briefly before start
+      </label>
+
+      {previewEnabled && (
+        <label>
+          Preview duration (seconds)
+          <input
+            type="number"
+            min={MIN_PREVIEW}
+            max={MAX_PREVIEW}
+            value={previewSeconds}
+            onChange={(e) => setPreviewSeconds(Number(e.target.value))}
+          />
+        </label>
+      )}
 
       {error && <p className="config-error">{error}</p>}
 
