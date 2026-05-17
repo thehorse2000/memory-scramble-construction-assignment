@@ -9,6 +9,7 @@ export function useGame() {
   const [cards, setCards] = useState([]);
   const [selected, setSelected] = useState([]);
   const [secondsLeft, setSecondsLeft] = useState(0);
+  const [previewLeft, setPreviewLeft] = useState(0);
   const unflipTimer = useRef(null);
 
   const clearUnflip = () => {
@@ -25,7 +26,14 @@ export function useGame() {
     setCards(deck);
     setSelected([]);
     setSecondsLeft(newConfig.timeoutSeconds);
-    setStatus('playing');
+    const preview = newConfig.previewSeconds ?? 0;
+    if (preview > 0) {
+      setPreviewLeft(preview);
+      setStatus('preview');
+    } else {
+      setPreviewLeft(0);
+      setStatus('playing');
+    }
   }, []);
 
   const reset = useCallback(() => {
@@ -34,6 +42,7 @@ export function useGame() {
     setCards([]);
     setSelected([]);
     setSecondsLeft(0);
+    setPreviewLeft(0);
   }, []);
 
   const flipCard = useCallback((id) => {
@@ -112,6 +121,27 @@ export function useGame() {
     }
   }, [secondsLeft, status]);
 
+  // Preview countdown — when it hits 0, transition into 'playing'.
+  useEffect(() => {
+    if (status !== 'preview') return;
+    const id = setInterval(() => {
+      setPreviewLeft((s) => {
+        if (s <= 1) {
+          clearInterval(id);
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [status]);
+
+  useEffect(() => {
+    if (status === 'preview' && previewLeft === 0) {
+      setStatus('playing');
+    }
+  }, [previewLeft, status]);
+
   useEffect(() => () => clearUnflip(), []);
 
   return {
@@ -119,6 +149,7 @@ export function useGame() {
     config,
     cards,
     secondsLeft,
+    previewLeft,
     startGame,
     flipCard,
     reset,
