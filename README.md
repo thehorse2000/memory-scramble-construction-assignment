@@ -92,10 +92,4 @@ src/
 
 ## Team
 
-| Name      | ID    |
-| --------- | ----- |
-| _TODO_    | _TODO_ |
-| _TODO_    | _TODO_ |
-
-> Replace the placeholders with the team members' names and IDs before
-> submission.
+Amr Osama Fahim
