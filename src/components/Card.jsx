@@ -1,6 +1,6 @@
-export default function Card({ card, onFlip, disabled }) {
+export default function Card({ card, onFlip, disabled, forceReveal }) {
   const { faceUp, matched, emoji } = card;
-  const revealed = faceUp || matched;
+  const revealed = forceReveal || faceUp || matched;
 
   const className = [
     'card',

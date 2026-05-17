@@ -5,8 +5,16 @@ import Timer from './components/Timer.jsx';
 import GameOverModal from './components/GameOverModal.jsx';
 
 export default function App() {
-  const { status, config, cards, secondsLeft, startGame, flipCard, reset } =
-    useGame();
+  const {
+    status,
+    config,
+    cards,
+    secondsLeft,
+    previewLeft,
+    startGame,
+    flipCard,
+    reset,
+  } = useGame();
 
   if (status === 'config') {
     return (
@@ -16,11 +24,19 @@ export default function App() {
     );
   }
 
+  const previewing = status === 'preview';
+
   return (
     <main className="app">
       <header className="game-header">
         <h1>Memory Scramble</h1>
-        <Timer secondsLeft={secondsLeft} />
+        {previewing ? (
+          <div className="preview-banner">
+            Memorize: <strong>{previewLeft}s</strong>
+          </div>
+        ) : (
+          <Timer secondsLeft={secondsLeft} />
+        )}
         <button type="button" className="quit-btn" onClick={reset}>
           Quit
         </button>
@@ -31,6 +47,7 @@ export default function App() {
         cols={config.cols}
         onFlip={flipCard}
         locked={status !== 'playing'}
+        revealAll={previewing}
       />
 
       {(status === 'won' || status === 'lost') && (

@@ -1,6 +1,6 @@
 import Card from './Card.jsx';
 
-export default function Board({ cards, cols, onFlip, locked }) {
+export default function Board({ cards, cols, onFlip, locked, revealAll }) {
   return (
     <div
       className="board"
@@ -12,6 +12,7 @@ export default function Board({ cards, cols, onFlip, locked }) {
           card={card}
           onFlip={onFlip}
           disabled={locked}
+          forceReveal={revealAll}
         />
       ))}
     </div>
